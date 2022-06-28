@@ -13,24 +13,4 @@ public class Sheep extends Herbivores{
         this.setSatiety(SHEEP_SATIETY);
         this.setMaxValueOfEntity(SHEEP_MAX_VALUE);
     }
-
-    @Override
-    public void toDie() {
-
-    }
-
-    @Override
-    public void toEat(Plant plant) {
-
-    }
-
-    @Override
-    public void toMove() {
-
-    }
-
-    @Override
-    public void toMultiply(Herbivores herbivore) {
-
-    }
 }

@@ -13,24 +13,4 @@ public class Horse extends Herbivores {
         this.setSatiety(HORSE_SATIETY);
         this.setMaxValueOfEntity(HORSE_MAX_VALUE);
     }
-
-    @Override
-    public void toDie() {
-
-    }
-
-    @Override
-    public void toEat(Plant plant) {
-
-    }
-
-    @Override
-    public void toMove() {
-
-    }
-
-    @Override
-    public void toMultiply(Herbivores herbivore) {
-
-    }
 }

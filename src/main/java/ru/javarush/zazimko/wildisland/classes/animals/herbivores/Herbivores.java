@@ -1,18 +1,98 @@
 package ru.javarush.zazimko.wildisland.classes.animals.herbivores;
 
 import ru.javarush.zazimko.wildisland.classes.animals.Animal;
+import ru.javarush.zazimko.wildisland.classes.animals.Organism;
 import ru.javarush.zazimko.wildisland.classes.plants.Plant;
+import ru.javarush.zazimko.wildisland.classes.util.Randoms;
+import ru.javarush.zazimko.wildisland.exceptions.IslandConfigException;
+import ru.javarush.zazimko.wildisland.gameField.Cell;
+
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class Herbivores extends Animal {
+    public void toDie(Cell cell) {
+        ConcurrentHashMap<Type, Set<Organism>> organisms = cell.getOrganisms();
+        Class<? extends Herbivores> aClass = this.getClass();
+        Set<Organism> organismSet = organisms.get(aClass);
+        if (this.getWeight() < this.getWeight() * 0.5) {
+            organismSet.remove(this);
+        }
+    }
 
-    public abstract void toDie() ;
+
+    public void toEat(Cell cell) {
+        ConcurrentHashMap<Type, Set<Organism>> organisms = cell.getOrganisms();//получили мапу с организмами на клетке
+          Set<Organism> checkFood = checkFood(organisms);//отсортировали траву
+        for (Organism organism : checkFood) {
+                 if (this.getWeight() < this.getMaxWeight()) {
+                    this.setWeight(this.getWeight() + organism.getWeight());
+                    checkFood.remove(organism);
+                } else break;
+            }
+        }
+    public Set<Organism> checkFood(ConcurrentHashMap<Type, Set<Organism>> organisms) {
+        Set<Type> types = organisms.keySet();
+        Set<Organism> checkedHerbivores = new HashSet<>();
+        for (Type type : types) {
+            if (type instanceof Plant plant) {
+                checkedHerbivores.addAll(organisms.get(plant));
+            }
+        }
+        return checkedHerbivores;
+    }
 
 
-    public abstract void toEat(Plant plant);
+    public Cell toMove(Cell currentCell){
+        Cell destination;
+        int quantityOfSteps = this.getSpeed();
+
+        while (quantityOfSteps != 0) {
+            ArrayList<Cell> currentCellNeighbors = currentCell.getNeighbors();
+            int rndNumber = Randoms.getRnd(0, currentCellNeighbors.size() + 1);
+            currentCell = currentCellNeighbors.get(rndNumber);
+            quantityOfSteps--;
+        }
+        destination = currentCell;
+        ConcurrentHashMap<Type, Set<Organism>> destinationOrganisms = destination.getOrganisms();
+        Set<Organism> destinationSetOrganisms = destinationOrganisms.get(this.getClass());
+        destinationSetOrganisms.add(this);
+        currentCell.getOrganisms().get(this.getClass()).remove(this);
+        this.setWeight(this.getWeight() - (this.getWeight() * 0.1));
+        return destination;
+    }
 
 
-    public abstract void toMove() ;
+    public void toMultiply(Cell cell) {
+        ConcurrentHashMap<Type, Set<Organism>> organisms = cell.getOrganisms();
+        Class<? extends Herbivores> aClass = this.getClass();
+        Organism organism = checkMultiply(aClass, organisms);
+        Set<Organism> organismSet = organisms.get(aClass);
+        organismSet.add(organism);
+    }
+    private Organism checkMultiply(Class<? extends Herbivores> aClass, ConcurrentHashMap<Type, Set<Organism>> organisms) {
+        Set<Type> types = organisms.keySet();
+        Organism organism = null;
+        if (types.contains(aClass)) {
+            Set<Organism> setToMultiply = organisms.get(aClass);
+            if (setToMultiply.size() > 1) {
+                try {
+                    Constructor<? extends Herbivores> constructor = aClass.getConstructor();
+                    organism = constructor.newInstance();
 
-    public abstract void toMultiply(Herbivores herbivore) ;
+                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                         IllegalAccessException | RuntimeException e) {
+                    throw new IslandConfigException("NO found constructor!!!");
+                }
+
+            }
+        }
+        return organism;
+    }
 
 }

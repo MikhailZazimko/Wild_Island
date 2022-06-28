@@ -13,24 +13,4 @@ public class Mouse extends Herbivores{
         this.setSatiety(MOUSE_SATIETY);
         this.setMaxValueOfEntity(MOUSE_MAX_VALUE);
     }
-
-    @Override
-    public void toDie() {
-
-    }
-
-    @Override
-    public void toEat(Plant plant) {
-
-    }
-
-    @Override
-    public void toMove() {
-
-    }
-
-    @Override
-    public void toMultiply(Herbivores herbivore) {
-
-    }
 }

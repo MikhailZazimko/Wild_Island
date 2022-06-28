@@ -13,24 +13,4 @@ public class Rabbit extends Herbivores{
         this.setSatiety(RABBIT_SATIETY);
         this.setMaxValueOfEntity(RABBIT_MAX_VALUE);
     }
-
-    @Override
-    public void toDie() {
-
-    }
-
-    @Override
-    public void toEat(Plant plant) {
-
-    }
-
-    @Override
-    public void toMove() {
-
-    }
-
-    @Override
-    public void toMultiply(Herbivores herbivore) {
-
-    }
 }

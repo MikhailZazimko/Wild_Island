@@ -8,8 +8,8 @@ import java.io.Serializable;
 
 public class Config implements Serializable {
     public static final int SIZE= 20;
-    public static final int HEIGHT= 30;
-    public static final int WIDTH = 40;
+    public static final int HEIGHT= 20;
+    public static final int WIDTH = 100;
     //********************************
     // array of animal types to start the game with
     public static final Class<?>[] TYPES = {Plant.class, Horse.class, Bear.class, Eagle.class, Fox.class, Snake.class, Wolf.class,
@@ -65,6 +65,7 @@ public class Config implements Serializable {
     public static final String DUCK_ICON ="\uD83E\uDD86";
     public static final String CATERPILLAR_ICON ="\uD83D\uDC1B";
     public static final String MOUSE_ICON ="\uD83D\uDC01";
+    public static final String PLANT_ICON ="\uD83C\uDF3F";
 //*************************************************
     public static final double BEAR_SATIETY=80;
     public static final double WOLF_SATIETY=8;
