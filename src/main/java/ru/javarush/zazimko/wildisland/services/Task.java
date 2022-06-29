@@ -1,7 +1,6 @@
 package ru.javarush.zazimko.wildisland.services;
 
 import lombok.Getter;
-import ru.javarush.zazimko.wildisland.classes.animals.Animal;
 import ru.javarush.zazimko.wildisland.classes.animals.Organism;
 import ru.javarush.zazimko.wildisland.classes.animals.carnivores.Carnivore;
 import ru.javarush.zazimko.wildisland.classes.animals.herbivores.Herbivores;
@@ -21,13 +20,17 @@ public class Task {
 
     public void doTask() {
         if (organism instanceof Carnivore carnivore) {
-            Cell destination = carnivore.toMove(cell);
-            carnivore.toEat(destination);
-            carnivore.toMultiply(destination);
-        } else if(organism instanceof Herbivores herbivores){
-            Cell destination = herbivores.toMove(cell);
-            herbivores.toEat(destination);
-            herbivores.toMultiply(destination);
+            carnivore.toEat(cell);
+            carnivore.toMultiply(cell);
+            carnivore.toDie(cell);
+            carnivore.toMove(cell);
+
+            } else if(organism instanceof Herbivores herbivores){
+            herbivores.toEat(cell);
+            herbivores.toMultiply(cell);
+            herbivores.toDie(cell);
+            herbivores.toMove(cell);
+
         }
     }
 

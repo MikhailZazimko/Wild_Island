@@ -9,7 +9,6 @@ import ru.javarush.zazimko.wildisland.gameField.Cell;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -60,23 +59,15 @@ public abstract class Carnivore extends Animal {
     }
 
 
-    public Cell toMove(Cell currentCell) {
+    public void toMove(Cell currentCell) {
         Cell destination;
         int quantityOfSteps = this.getSpeed();
-
-        while (quantityOfSteps != 0) {
-            ArrayList<Cell> currentCellNeighbors = currentCell.getNeighbors();
-            int rndNumber = Randoms.getRnd(0, currentCellNeighbors.size() + 1);
-            currentCell = currentCellNeighbors.get(rndNumber);
-            quantityOfSteps--;
-        }
-        destination = currentCell;
+        destination = currentCell.getNextCell(quantityOfSteps);
         ConcurrentHashMap<Type, Set<Organism>> destinationOrganisms = destination.getOrganisms();
         Set<Organism> destinationSetOrganisms = destinationOrganisms.get(this.getClass());
         destinationSetOrganisms.add(this);
         currentCell.getOrganisms().get(this.getClass()).remove(this);
         this.setWeight(this.getWeight() - (this.getWeight() * 0.1));
-        return destination;
     }
 
     public void toMultiply(Cell cell) {

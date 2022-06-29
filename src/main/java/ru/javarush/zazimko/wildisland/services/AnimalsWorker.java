@@ -12,7 +12,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class AnimalsWorker implements Runnable {
+public class AnimalsWorker extends Thread {
       private final Field field;
     private final Queue<Task> tasks = new ConcurrentLinkedQueue<>();
 
@@ -33,7 +33,6 @@ public class AnimalsWorker implements Runnable {
                         try {
                             for (Organism animal1 : animalSet) {
                                 tasks.add(new Task(animal1, value));
-
                             }
 
                         } finally {

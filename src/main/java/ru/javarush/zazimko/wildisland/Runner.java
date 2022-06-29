@@ -13,7 +13,7 @@ public class Runner {
         Factory factory=new Factory();
         Field field=new Field();
         View view = new ConsoleView(field);
-        Game game = new Game(factory,view);
+        Game game = new Game(factory,view,field);
         GameWorker gameWorker = new GameWorker(game);
         gameWorker.start();
     }

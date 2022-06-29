@@ -17,6 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class GameWorker extends Thread {
     public static final int CORE_POOL_SIZE = 4;
     private final Game game;
+
     private static final int PERIOD = 1000;
 
     public GameWorker(Game game) {
@@ -27,15 +28,12 @@ public class GameWorker extends Thread {
     public void run() {
         View view = game.getView();
         //view.showStatistics();
-        Field field = new Field();
-        field.initCells();
-        game.initField();
-        game.initPlant();
 
         // SwingUtilities.invokeLater(field);
 
         ScheduledExecutorService mainPool = Executors.newScheduledThreadPool(CORE_POOL_SIZE);
         List<Cell[]> arrayCells = new ArrayList<>();
+        Field field=game.getField();
         Cell[][] cells = field.getCells();
         Collections.addAll(arrayCells, cells);
         List<AnimalsWorker> workers = arrayCells.stream()
@@ -48,7 +46,9 @@ public class GameWorker extends Thread {
 
     private void runWorkers(View view, List<AnimalsWorker> workers) {
         ExecutorService servicePool = Executors.newFixedThreadPool(CORE_POOL_SIZE);
-        workers.forEach(servicePool::submit);
+        for (AnimalsWorker worker : workers) {
+            servicePool.submit(worker);
+        }
         servicePool.shutdown();
         awaitPool(view, servicePool);
     }

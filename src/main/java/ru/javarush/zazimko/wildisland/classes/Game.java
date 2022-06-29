@@ -27,32 +27,38 @@ public class Game {
     private final View view;
 
 
-    public Game(Factory factory, View view) {
-        this.field = new Field();
+    public Game(Factory factory, View view, Field field) {
+        this.field = field;
         //javax.swing.SwingUtilities.invokeLater(field);
         this.factory = factory;
-        this.view=view;
+        this.view = view;
+        initField();
+        initPlant();
     }
 
     public void initField() {
-        int strRnd = Randoms.getRnd(0, Config.WIDTH);
-        int colRnd = Randoms.getRnd(0, Config.HEIGHT);
+        int strRnd = Randoms.getRnd(0, Config.WIDTH - 1);
+        int colRnd = Randoms.getRnd(0, Config.HEIGHT - 1);
         Cell[][] cells = field.getCells();
         cells[strRnd][colRnd].setOrganisms(factory.createAnimals());
+
 
     }
 
     public void initPlant() {
-        int strRnd = Randoms.getRnd(0, Config.WIDTH);
-        int colRnd = Randoms.getRnd(0, Config.HEIGHT);
         Cell[][] cells = field.getCells();
-        for (int i = 0; i < Randoms.getRnd(0, Config.HEIGHT * Config.WIDTH); i++) {
-            ConcurrentHashMap<Type, Set<Organism>> organisms = cells[strRnd][colRnd].getOrganisms();
-            Set<Organism> organismHashSet = new HashSet<>();
-            for (int j = 0; j < Randoms.getRnd(0, INITIAL_VALUE); j++) {
+        for (int i = 0; i < Config.WIDTH; i++) {
+            for (int j = 0; j < Config.HEIGHT; j++) {
+                ConcurrentHashMap<Type, Set<Organism>> organisms = cells[i][j].getOrganisms();
+                Set<Organism> organismHashSet = new HashSet<>();
                 organismHashSet.add(new Plant());
+                organisms.put(Plant.class, organismHashSet);
             }
-            organisms.put(Plant.class, organismHashSet);
+            for (int row = 0; row < cells.length; row++) {
+                for (int col = 0; col < cells[row].length; col++) {
+                    cells[row][col].updateNextCell(field, row, col);
+                }
+            }
         }
     }
 }

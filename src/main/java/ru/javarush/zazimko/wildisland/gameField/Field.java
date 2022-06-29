@@ -13,25 +13,14 @@ public class Field {
     public void initCells() {
             for (int i = 0; i < Config.WIDTH; i++) {
             for (int j = 0; j < Config.HEIGHT; j++) {
-                cells[i][j]=new Cell(i,j);
-
+                cells[i][j]=new Cell();
             }
         }
-        for (int i = 0; i < Config.WIDTH; i++) {
-            for (int j = 0; j < Config.HEIGHT; j++) {
-                for (int x = -1; x < 1; x++) {
-                    for (int y = -1; y <1 ; y++) {
-                        if(!(x==0)&&(y==0)){
-                            cells[i][j].addNeighbors(cells[(i+x+Config.WIDTH)%Config.WIDTH][(j+y+Config.HEIGHT)%Config.HEIGHT]);
-                        }
-                    }
 
-                    }
-                }
-            }
     }
     public Cell[][] getCells(){
         return cells;
 
     }
+
 }

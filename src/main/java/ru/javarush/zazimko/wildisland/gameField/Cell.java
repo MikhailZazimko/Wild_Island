@@ -3,10 +3,14 @@ package ru.javarush.zazimko.wildisland.gameField;
 import lombok.Getter;
 import lombok.Setter;
 import ru.javarush.zazimko.wildisland.classes.animals.Organism;
+import ru.javarush.zazimko.wildisland.classes.util.Randoms;
+import ru.javarush.zazimko.wildisland.modificators.Config;
 import ru.javarush.zazimko.wildisland.modificators.Status;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.Lock;
@@ -21,7 +25,7 @@ public class Cell {
     private Status status;
     private final Lock lock = new ReentrantLock(true);
 
-    public Cell(int x, int y) {
+    public Cell() {
         organisms = new ConcurrentHashMap<>();
         neighbors = new ArrayList<>();
         status = Status.NONE;
@@ -50,5 +54,37 @@ public class Cell {
                         .orElse("?"))
                 .map(Object::toString)
                 .collect(Collectors.joining());
+    }
+    public void updateNextCell(Field field, int row, int col) {
+        Cell[][] cells = field.getCells();
+        if (row > 0) neighbors.add(cells[row - 1][col]);
+        if (col > 0) neighbors.add(cells[row][col - 1]);
+        if (row < Config.WIDTH - 1) neighbors.add(cells[row + 1][col]);
+        if (col < Config.HEIGHT - 1) neighbors.add(cells[row][col + 1]);
+    }
+
+    public Cell getNextCell(int countStep) {
+        Set<Cell> visitedCells = new HashSet<>();
+        Cell currentCell = this;
+        while (visitedCells.size() < countStep) {
+            var nextCells = currentCell
+                    .neighbors
+                    .stream()
+                    .filter(cell -> !visitedCells.contains(cell))
+                    .toList();
+            int countDirections = nextCells.size();
+            if (countDirections > 0) {
+                int index = Randoms.getRnd(0, countDirections);
+                currentCell = nextCells.get(nextCells.size() - 1 - index);
+                visitedCells.add(currentCell);
+            } else {
+                break;
+            }
+        }
+        return currentCell;
+    }
+
+    public int getNextCellCount() {
+        return neighbors.size();
     }
 }

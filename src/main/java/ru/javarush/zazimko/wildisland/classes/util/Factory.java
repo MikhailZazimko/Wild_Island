@@ -15,16 +15,18 @@ import static ru.javarush.zazimko.wildisland.modificators.Config.TYPES;
 
 public class Factory {
     private final Class<?>[] types;
-    private final int quantity;
+
 
     public Factory() {
         this.types = TYPES;
-        this.quantity=INITIAL_VALUE;
+
     }
 
     public ConcurrentHashMap<Type, Set<Organism>> createAnimals() {
+
         ConcurrentHashMap<Type, Set<Organism>> organisms=new ConcurrentHashMap<>();
         for (Class<?> type : types) {
+            int quantity=Randoms.getRnd(0,INITIAL_VALUE);
             try {
                 Set<Organism> animals = new HashSet<>();
                 Constructor<?> constructor = type.getConstructor();

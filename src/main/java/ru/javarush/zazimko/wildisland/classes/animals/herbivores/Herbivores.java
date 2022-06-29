@@ -3,14 +3,12 @@ package ru.javarush.zazimko.wildisland.classes.animals.herbivores;
 import ru.javarush.zazimko.wildisland.classes.animals.Animal;
 import ru.javarush.zazimko.wildisland.classes.animals.Organism;
 import ru.javarush.zazimko.wildisland.classes.plants.Plant;
-import ru.javarush.zazimko.wildisland.classes.util.Randoms;
 import ru.javarush.zazimko.wildisland.exceptions.IslandConfigException;
 import ru.javarush.zazimko.wildisland.gameField.Cell;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -48,23 +46,15 @@ public abstract class Herbivores extends Animal {
     }
 
 
-    public Cell toMove(Cell currentCell){
+    public void toMove(Cell currentCell){
         Cell destination;
         int quantityOfSteps = this.getSpeed();
-
-        while (quantityOfSteps != 0) {
-            ArrayList<Cell> currentCellNeighbors = currentCell.getNeighbors();
-            int rndNumber = Randoms.getRnd(0, currentCellNeighbors.size() + 1);
-            currentCell = currentCellNeighbors.get(rndNumber);
-            quantityOfSteps--;
-        }
-        destination = currentCell;
+        destination = currentCell.getNextCell(quantityOfSteps);
         ConcurrentHashMap<Type, Set<Organism>> destinationOrganisms = destination.getOrganisms();
         Set<Organism> destinationSetOrganisms = destinationOrganisms.get(this.getClass());
         destinationSetOrganisms.add(this);
         currentCell.getOrganisms().get(this.getClass()).remove(this);
         this.setWeight(this.getWeight() - (this.getWeight() * 0.1));
-        return destination;
     }
 
 
@@ -84,8 +74,7 @@ public abstract class Herbivores extends Animal {
                 try {
                     Constructor<? extends Herbivores> constructor = aClass.getConstructor();
                     organism = constructor.newInstance();
-
-                } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                     } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
                          IllegalAccessException | RuntimeException e) {
                     throw new IslandConfigException("NO found constructor!!!");
                 }
